@@ -1,7 +1,10 @@
 package graph.support;
 
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
+
+import edu.princeton.cs.introcs.StdDraw;
 
 public class SuperVertex {
 	
@@ -58,6 +61,12 @@ public class SuperVertex {
 	
 	public Set<SuperEdge> getOutEdges() {
 		return outEdges;
+	}
+	
+	public void draw() {
+		StdDraw.setPenColor(Color.RED);
+		StdDraw.setPenRadius(0.03);
+		StdDraw.point(vertex.getX(), vertex.getY());
 	}
 	
 	public String toString() {
