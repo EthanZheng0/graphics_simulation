@@ -1,6 +1,8 @@
 package graph.support;
 
 import java.awt.Color;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import edu.princeton.cs.introcs.StdDraw;
 
@@ -63,7 +65,9 @@ public class Vertex {
 	}
 
 	public String toString() {
-		return "(" + x + ", " + y + ")";
+		DecimalFormat df = new DecimalFormat("#.####");
+		df.setRoundingMode(RoundingMode.HALF_UP);
+		return "(" + df.format(x) + ", " + df.format(y) + ")";
 	}
 
 }

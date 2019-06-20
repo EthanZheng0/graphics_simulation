@@ -20,6 +20,10 @@ public class SuperEdge {
 		this.length = length;
 		this.start = new SuperVertex(vertices.firstElement());
 		this.end = new SuperVertex(vertices.lastElement());
+		this.start.addNeighbor(end);
+		this.end.addNeighbor(start);
+		this.start.addOutEdge(this);
+		this.end.addOutEdge(this);
 	}
 
 	@Override
@@ -71,5 +75,9 @@ public class SuperEdge {
 
 	public SuperVertex getEnd() {
 		return end;
+	}
+	
+	public String toString() {
+		return start.toString() + " <-> " + end.toString();
 	}
 }

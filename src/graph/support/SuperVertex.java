@@ -1,11 +1,18 @@
 package graph.support;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SuperVertex {
 	
 	private final Vertex vertex;
+	private Set<SuperVertex> neighbors;
+	private Set<SuperEdge> outEdges;
 	
 	public SuperVertex(Vertex vertex) {
 		this.vertex = vertex;
+		this.neighbors = new HashSet<>();
+		this.outEdges = new HashSet<>();
 	}
 	
 	@Override
@@ -35,6 +42,26 @@ public class SuperVertex {
 
 	public Vertex getVertex() {
 		return vertex;
+	}
+	
+	public boolean addNeighbor(SuperVertex sv) {
+		return neighbors.add(sv);
+	}
+	
+	public Set<SuperVertex> getNeighbors() {
+		return neighbors;
+	}
+	
+	public boolean addOutEdge(SuperEdge se) {
+		return outEdges.add(se);
+	}
+	
+	public Set<SuperEdge> getOutEdges() {
+		return outEdges;
+	}
+	
+	public String toString() {
+		return "[" + vertex.toString() + "]";
 	}
 	
 }

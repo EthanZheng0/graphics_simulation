@@ -13,17 +13,17 @@ public class VisualizationApp {
 	@SuppressWarnings({ "deprecation" })
 	public static void main(String[] args) {
 
+		int NUMBER_OF_ITERATIONS = 5;
+		
 		// Set canvas
 		StdDraw.setXscale();
 		StdDraw.setYscale();
 		StdDraw.setCanvasSize(800, 800);
 		StdDraw.setPenRadius(0.006);
 
-		int NUMBER_OF_ITERATIONS = 5;
-
-		// User drawing
-		Vector<Vertex> vertices = new Vector<>();
-		Vector<Edge> edges = new Vector<>();
+		// User drawing & constructing SuperEdge
+		Vector<Vertex> drawnVertices = new Vector<>();
+		Vector<Edge> drawnEdges = new Vector<>();
 		boolean isPressed = false;
 		while (true) {
 			if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
@@ -35,12 +35,12 @@ public class VisualizationApp {
 					double mouseX = StdDraw.mouseX();
 					double mouseY = StdDraw.mouseY();
 					Vertex v = new Vertex(mouseX, mouseY);
-					vertices.add(v);
+					drawnVertices.add(v);
 					v.draw();
-					if (vertices.size() > 1) {
-						Vertex prev = vertices.get(vertices.size() - 2);
+					if (drawnVertices.size() > 1) {
+						Vertex prev = drawnVertices.get(drawnVertices.size() - 2);
 						Edge e = new Edge(prev, v);
-						edges.add(e);
+						drawnEdges.add(e);
 						e.draw();
 					}
 				}
@@ -48,28 +48,27 @@ public class VisualizationApp {
 				isPressed = false;
 			}
 		}
+		SuperEdge drawn = new SuperEdge(drawnVertices, drawnEdges);
 
 		// Fairing
 		StdDraw.show(200);
-		Vector<Vertex> tempVertices = vertices;
-		Vector<Edge> tempEdges = edges;
+		SuperEdge temp = drawn;
 		for (int i = 0; i < NUMBER_OF_ITERATIONS; ++i) {
 			StdDraw.clear();
-			SuperEdge faired = Fairing.fairSuperEdge(tempVertices, tempEdges);
-			tempVertices = faired.getVertices();
-			tempEdges = faired.getEdges();
-			for (Vertex tv : tempVertices) {
+			SuperEdge faired = Fairing.fairSuperEdge(temp);
+			for (Vertex tv : faired.getVertices()) {
 				tv.draw(Color.GRAY);
 			}
-			for (Edge te : tempEdges) {
+			for (Edge te : faired.getEdges()) {
 				te.draw(Color.GREEN);
 			}
-			for (Vertex v : vertices) {
+			for (Vertex v : drawn.getVertices()) {
 				v.draw();
 			}
-			for (Edge e : edges) {
+			for (Edge e : drawn.getEdges()) {
 				e.draw();
 			}
+			temp = faired;
 			StdDraw.show(200);
 		}
 	}

@@ -8,7 +8,8 @@ import graph.support.Vertex;
 
 public class Fairing {
 
-	public static SuperEdge fairSuperEdge(Vector<Vertex> currVertices, Vector<Edge> currEdges) {
+	public static SuperEdge fairSuperEdge(SuperEdge se) {
+		Vector<Vertex> currVertices = se.getVertices();
 		Vector<Vertex> nextVertices = new Vector<>();
 		Vector<Edge> nextEdges = new Vector<>();
 		nextVertices.add(currVertices.firstElement());
