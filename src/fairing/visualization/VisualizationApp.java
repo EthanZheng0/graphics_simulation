@@ -21,12 +21,15 @@ public class VisualizationApp {
 		StdDraw.setXscale();
 		StdDraw.setYscale();
 		StdDraw.setCanvasSize(800, 800);
-		StdDraw.setPenRadius(0.006);
 
 		// User drawing
 		SuperSkeleton skeleton = new SuperSkeleton();
 		boolean isDrawing = false;
 		boolean isSpacePressed = false;
+		System.out.println("\nInstructions:\n");
+		System.out.println("-- Click on the canvas to draw an edge.");
+		System.out.println("-- Press space to save the edge you draw.");
+		System.out.println("-- Press enter to visualize fairing after \ndrawing and saving all the edges.");
 		drawEdgesLoop:
 		while(true) {
 			if(!isDrawing) {
@@ -74,6 +77,9 @@ public class VisualizationApp {
 						isPressed = false;
 					}
 				}
+				if(drawnVertices.size() == 0) {
+					continue drawEdgesLoop;
+				}
 				SuperEdge drawn = new SuperEdge(drawnVertices, drawnEdges);
 				skeleton.addSuperEdge(drawn);
 				for(SuperVertex sv : skeleton.getSuperVertices()) {
@@ -83,24 +89,26 @@ public class VisualizationApp {
 		}
 		
 		// Fairing
+		System.out.print("\nFairing");
 		StdDraw.show(200);
 		Vector<SuperEdge> temp = new Vector<>(skeleton.getSuperEdges());
 		for (int i = 0; i < NUMBER_OF_ITERATIONS; ++i) {
+			System.out.print(".");
 			StdDraw.clear();
 			for(int j = 0; j < temp.size(); ++j) {
 				SuperEdge faired = Fairing.fairSuperEdge(temp.get(j));
 				SuperEdge original = skeleton.getSuperEdges().get(j);
-				for (Vertex tv : faired.getVertices()) {
-					tv.draw(Color.GRAY);
-				}
-				for (Edge te : faired.getEdges()) {
-					te.draw(Color.GREEN);
-				}
 				for (Vertex v : original.getVertices()) {
 					v.draw();
 				}
 				for (Edge e : original.getEdges()) {
 					e.draw();
+				}
+				for (Vertex tv : faired.getVertices()) {
+					tv.draw(Color.GRAY);
+				}
+				for (Edge te : faired.getEdges()) {
+					te.draw(Color.GREEN);
 				}
 				for(SuperVertex sv : skeleton.getSuperVertices()) {
 					sv.draw();
@@ -109,5 +117,6 @@ public class VisualizationApp {
 			}			
 			StdDraw.show(200);
 		}
+		System.out.println("\n\nDone.");
 	}
 }
