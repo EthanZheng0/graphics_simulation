@@ -1,6 +1,8 @@
 # graphics_simulation
 A simulation tool for basic computer geometry.\
-Simply run the app with java and draw on the canvas.
+Simply run the app with java and draw visualization on the canvas.\
+This app relies on the Standard Library released by Princeton: [stdlib-package.jar](https://introcs.cs.princeton.edu/java/stdlib/stdlib-package.jar)\
+Download this library and add it to your external libraries before running this app.
 
 ### Instructions:
 -- Click on the canvas to draw an edge.\
