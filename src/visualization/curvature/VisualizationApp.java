@@ -82,10 +82,10 @@ public class VisualizationApp {
 				StdDraw.circle(center.getX(), center.getY(), radius);
 				StdDraw.setPenColor(Color.BLACK);
 				StdDraw.text(0.1, 0.95, "Radius: " + Math.round(radius * 1000) / 100.0);
-				StdDraw.text(0.12, 0.92, "Curvature: " + Math.round(100.0 / radius) / 10000.0);
+				StdDraw.text(0.12, 0.92, "Curvature: " + Math.round(1000.0 / radius) / 10000.0);
 				centerSV.draw();
 			}
-			StdDraw.show(50);
+			StdDraw.show(30);
 		}
 	}
 
