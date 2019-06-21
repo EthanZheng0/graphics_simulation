@@ -1,14 +1,15 @@
-package fairing.visualization;
+package visualization.fairing;
 
 import java.awt.Color;
 import java.util.Vector;
 import com.sun.glass.events.KeyEvent;
 import edu.princeton.cs.introcs.*;
-import graph.support.Edge;
-import graph.support.SuperEdge;
-import graph.support.SuperSkeleton;
-import graph.support.SuperVertex;
-import graph.support.Vertex;
+import support.algorithm.Fairing;
+import support.graph.Edge;
+import support.graph.SuperEdge;
+import support.graph.SuperSkeleton;
+import support.graph.SuperVertex;
+import support.graph.Vertex;
 
 public class VisualizationApp {
 

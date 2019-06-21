@@ -1,10 +1,10 @@
-package fairing.visualization;
+package support.algorithm;
 
 import java.util.Vector;
 
-import graph.support.Edge;
-import graph.support.SuperEdge;
-import graph.support.Vertex;
+import support.graph.Edge;
+import support.graph.SuperEdge;
+import support.graph.Vertex;
 
 public class Fairing {
 

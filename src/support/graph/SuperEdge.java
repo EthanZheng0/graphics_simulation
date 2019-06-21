@@ -1,4 +1,4 @@
-package graph.support;
+package support.graph;
 
 import java.util.Vector;
 
