@@ -63,6 +63,12 @@ public class Vertex {
 		StdDraw.setPenRadius(0.02);
 		StdDraw.point(x, y);
 	}
+	
+	public double euclideanDistance(Vertex other) {
+		double deltaX = this.x - other.getX();
+		double deltaY = this.y - other.getY();
+		return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+	}
 
 	public String toString() {
 		DecimalFormat df = new DecimalFormat("#.####");
