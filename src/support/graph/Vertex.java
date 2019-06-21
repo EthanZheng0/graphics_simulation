@@ -63,7 +63,7 @@ public class Vertex {
 		StdDraw.setPenRadius(0.02);
 		StdDraw.point(x, y);
 	}
-	
+
 	public double euclideanDistance(Vertex other) {
 		double deltaX = this.x - other.getX();
 		double deltaY = this.y - other.getY();

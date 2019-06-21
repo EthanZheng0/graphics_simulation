@@ -21,5 +21,5 @@ public class CircumcircleCenter {
 		double[][] result = GaussElimination.eliminate(matrix);
 		return new Vertex(result[0][2], result[1][2]);
 	}
-	
+
 }

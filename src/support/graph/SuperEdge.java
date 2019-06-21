@@ -76,7 +76,31 @@ public class SuperEdge {
 	public SuperVertex getEnd() {
 		return end;
 	}
+
+	public Vertex getByCoordinates(double x, double y) {
+		for (Vertex v : vertices) {
+			double deltaX = v.getX() - x;
+			double deltaY = v.getY() - y;
+			double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+			if (distance < 0.01) {
+				return v;
+			}
+		}
+		return null;
+	}
 	
+	public int getIndexByCoordinates(double x, double y) {
+		for (int i = 0; i < vertices.size(); ++i) {
+			double deltaX = vertices.get(i).getX() - x;
+			double deltaY = vertices.get(i).getY() - y;
+			double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+			if (distance < 0.01) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	public String toString() {
 		return start.toString() + " <-> " + end.toString();
 	}

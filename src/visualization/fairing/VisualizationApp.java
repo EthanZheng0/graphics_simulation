@@ -17,7 +17,7 @@ public class VisualizationApp {
 	public static void main(String[] args) {
 
 		int NUMBER_OF_ITERATIONS = 5;
-		
+
 		// Set canvas
 		StdDraw.setXscale();
 		StdDraw.setYscale();
@@ -31,26 +31,23 @@ public class VisualizationApp {
 		System.out.println("-- Click on the canvas to draw an edge.");
 		System.out.println("-- Press space to save the edge you draw.");
 		System.out.println("-- Press enter to visualize fairing after \ndrawing and saving all the edges.");
-		drawEdgesLoop:
-		while(true) {
-			if(!isDrawing) {
+		drawEdgesLoop: while (true) {
+			if (!isDrawing) {
 				isDrawing = true;
 				Vector<Vertex> drawnVertices = new Vector<>();
 				Vector<Edge> drawnEdges = new Vector<>();
 				boolean isPressed = false;
-				drawOneEdgeLoop:
-				while (true) {
-					if(StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
+				drawOneEdgeLoop: while (true) {
+					if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
 						break drawEdgesLoop;
 					}
 					if (StdDraw.isKeyPressed(KeyEvent.VK_SPACE)) {
-						if(!isSpacePressed) {
+						if (!isSpacePressed) {
 							isSpacePressed = true;
 							isDrawing = false;
 							break drawOneEdgeLoop;
 						}
-					}
-					else {
+					} else {
 						isSpacePressed = false;
 					}
 					if (StdDraw.isMousePressed()) {
@@ -58,12 +55,12 @@ public class VisualizationApp {
 							isPressed = true;
 							double mouseX = StdDraw.mouseX();
 							double mouseY = StdDraw.mouseY();
-							Vertex v = new Vertex(mouseX, mouseY);;
+							Vertex v = new Vertex(mouseX, mouseY);
+							;
 							SuperVertex sv = skeleton.getByCoordinates(mouseX, mouseY);
-							if(sv != null) {
+							if (sv != null) {
 								v = sv.getVertex();
-							}
-							else {
+							} else {
 								v.draw();
 							}
 							drawnVertices.add(v);
@@ -78,17 +75,17 @@ public class VisualizationApp {
 						isPressed = false;
 					}
 				}
-				if(drawnVertices.size() == 0) {
+				if (drawnVertices.size() == 0) {
 					continue drawEdgesLoop;
 				}
 				SuperEdge drawn = new SuperEdge(drawnVertices, drawnEdges);
 				skeleton.addSuperEdge(drawn);
-				for(SuperVertex sv : skeleton.getSuperVertices()) {
+				for (SuperVertex sv : skeleton.getSuperVertices()) {
 					sv.draw();
 				}
 			}
 		}
-		
+
 		// Fairing
 		System.out.print("\nFairing");
 		StdDraw.show(200);
@@ -96,7 +93,7 @@ public class VisualizationApp {
 		for (int i = 0; i < NUMBER_OF_ITERATIONS; ++i) {
 			System.out.print(".");
 			StdDraw.clear();
-			for(int j = 0; j < temp.size(); ++j) {
+			for (int j = 0; j < temp.size(); ++j) {
 				SuperEdge faired = Fairing.fairSuperEdge(temp.get(j));
 				SuperEdge original = skeleton.getSuperEdges().get(j);
 				for (Vertex v : original.getVertices()) {
@@ -111,11 +108,11 @@ public class VisualizationApp {
 				for (Edge te : faired.getEdges()) {
 					te.draw(Color.GREEN);
 				}
-				for(SuperVertex sv : skeleton.getSuperVertices()) {
+				for (SuperVertex sv : skeleton.getSuperVertices()) {
 					sv.draw();
 				}
 				temp.set(j, faired);
-			}			
+			}
 			StdDraw.show(200);
 		}
 		System.out.println("\n\nDone.");
