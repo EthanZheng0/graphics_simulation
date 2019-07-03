@@ -1,9 +1,18 @@
 package support.graph;
 
+import java.awt.Color;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
+
+import edu.princeton.cs.introcs.StdDraw;
+
 import java.util.Set;
 import java.util.Vector;
 
@@ -15,16 +24,19 @@ import support.algorithm.Geometry;
  *
  */
 
+@SuppressWarnings("unused")
 public class Skeleton {
 	
 	private static class Vertex {
 		private double x;
 		private double y;
+		private double thickness;
 		private Map<Integer, Integer> neighbors;
 		
-		private Vertex(double x, double y) {
+		private Vertex(double x, double y, double thickness) {
 			this.x = x;
 			this.y = y;
+			this.thickness = thickness;
 			this.neighbors = new HashMap<>();
 		}
 	}
@@ -43,10 +55,14 @@ public class Skeleton {
 	
 	/**
 	 * 
-	 * adjacency_list: A vector containing all the vertices. The index at which a vertex is contained is its id.
-	 * vertex_id_map: A map with all the vertices as keys and their corresponding id as values.
-	 * edge_list: A vector containing all the edges. The index at which an edge is contained is its id.
-	 * edge_id_map: A map with all the edges as keys and their corresponding id as values.
+	 * adjacency_list: 	A vector containing all the vertices. 
+	 * 					The index at which a vertex is contained is its id.
+	 * 					Indices for added but later removed vertices will be kept as null.
+	 * vertex_id_map: 	A map with all the vertices as keys and their corresponding id as values.
+	 * edge_list: 		A vector containing all the edges. 
+	 * 					The index at which an edge is contained is its id.
+	 * 			  		Indices for added but later removed edges will be kept as null.
+	 * edge_id_map: 	A map with all the edges as keys and their corresponding id as values.
 	 * 
 	 */
 	private Vector<Vertex> vertex_list;
@@ -61,6 +77,35 @@ public class Skeleton {
 		this.edge_id_map = new HashMap<>();
 	}
 	
+	public static Skeleton loadSkeletonFromFile() {
+		Skeleton s = new Skeleton();
+		FileDialog fd = new FileDialog((Frame)null, "Open", FileDialog.LOAD);
+	    fd.setVisible(true);
+	    String filePath = fd.getDirectory() + fd.getFile();
+	    Scanner sc = null;
+	    try {
+			sc = new Scanner(new File(filePath));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	    while(sc.hasNextLine()) {
+	    	String line = sc.nextLine();
+	    	String[] data = line.split(" ");
+	    	if(data.length == 5) {
+	    		double thickness = Double.parseDouble(data[0]);
+	    		double x = Double.parseDouble(data[2]) / 350;
+	    		double y = 1 - Double.parseDouble(data[4]) / 350;
+	    		s.addVertex(x, y, thickness);
+	    	}
+	    	if(data.length == 2) {
+	    		int vertexAId = Integer.parseInt(data[0]);
+	    		int vertexBId = Integer.parseInt(data[1]);
+	    		s.addEdge(vertexAId, vertexBId);
+	    	}
+	    }
+		return s;
+	}
+	
 	/**
 	 * 
 	 * @param x
@@ -68,8 +113,8 @@ public class Skeleton {
 	 * @return id of the newly added vertex
 	 * 
 	 */
-	public int addVertex(double x, double y) {
-		Vertex v = new Vertex(x, y);
+	public int addVertex(double x, double y, double thickness) {
+		Vertex v = new Vertex(x, y, thickness);
 		int id = vertex_list.size();
 		vertex_list.add(v);
 		vertex_id_map.put(v, id);
@@ -321,6 +366,24 @@ public class Skeleton {
 			return Geometry.getEuclideanDistance(a.x, b.x, a.y, b.y);
 		}
 		return edge_list.get(edgeId).length;
+	}
+	
+	public void drawSkeleton(Color edgeColor, Color vertexColor, double edgeThickness, double vertexRadius) {
+		StdDraw.setCanvasSize(800, 800);
+		StdDraw.setPenColor(edgeColor);
+		StdDraw.setPenRadius(edgeThickness);
+		for(Edge e : edge_list) {
+			if(e != null) {
+				StdDraw.line(e.endPoints[0].x, e.endPoints[0].y, e.endPoints[1].x, e.endPoints[1].y);
+			}
+		}
+//		StdDraw.setPenColor(vertexColor);
+//		StdDraw.setPenRadius(vertexRadius);
+//		for(Vertex v : vertex_list) {
+//			if(v != null) {
+//				StdDraw.point(v.x, v.y);
+//			}
+//		}
 	}
 
 	@Override
