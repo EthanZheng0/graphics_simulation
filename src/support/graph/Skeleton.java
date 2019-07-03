@@ -9,9 +9,15 @@ import java.util.Vector;
 
 import support.algorithm.Geometry;
 
+/**
+ * 
+ * @author Yishan Ethan Zheng (https://github.com/EthanZheng0)
+ *
+ */
+
 public class Skeleton {
 	
-	static class Vertex {
+	private static class Vertex {
 		private double x;
 		private double y;
 		private Map<Integer, Integer> neighbors;
@@ -21,66 +27,82 @@ public class Skeleton {
 			this.y = y;
 			this.neighbors = new HashMap<>();
 		}
-		
-		private void addNeighbor(int vertexId, int edgeId) {
-			neighbors.put(vertexId, edgeId);
-		}
-		
-		private int getEdgeId(int vertexId) {
-			Integer edgeId = neighbors.get(vertexId);
-			if(edgeId == null) {
-				System.out.println("Edge doesn't exist.");
-				return -1;
-			}
-			return edgeId.intValue();
-		}
 	}
 	
-	static class Edge {
-		private Vertex[] endpoints;
+	private static class Edge {
+		private Vertex[] endPoints;
 		private double length;
 		
 		private Edge(Vertex v1, Vertex v2) {
-			this.endpoints = new Vertex[2];
-			this.endpoints[0] = v1;
-			this.endpoints[1] = v2;
+			this.endPoints = new Vertex[2];
+			this.endPoints[0] = v1;
+			this.endPoints[1] = v2;
 			this.length = Geometry.getEuclideanDistance(v1.x, v2.x, v1.y, v2.y);
 		}
 	}
 	
-	private Vector<Vertex> adjacency_list;
+	/**
+	 * 
+	 * adjacency_list: A vector containing all the vertices. The index at which a vertex is contained is its id.
+	 * vertex_id_map: A map with all the vertices as keys and their corresponding id as values.
+	 * edge_list: A vector containing all the edges. The index at which an edge is contained is its id.
+	 * edge_id_map: A map with all the edges as keys and their corresponding id as values.
+	 * 
+	 */
+	private Vector<Vertex> vertex_list;
 	private Map<Vertex, Integer> vertex_id_map;
 	private Vector<Edge> edge_list;
 	private Map<Edge, Integer> edge_id_map;
 	
 	public Skeleton() {
-		this.adjacency_list = new Vector<>();
+		this.vertex_list = new Vector<>();
 		this.vertex_id_map = new HashMap<>();
 		this.edge_list = new Vector<>();
 		this.edge_id_map = new HashMap<>();
 	}
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @return id of the newly added vertex
+	 * 
+	 */
 	public int addVertex(double x, double y) {
 		Vertex v = new Vertex(x, y);
-		int id = adjacency_list.size();
-		adjacency_list.add(v);
+		int id = vertex_list.size();
+		vertex_list.add(v);
 		vertex_id_map.put(v, id);
 		return id;
 	}
 	
+	/**
+	 * 
+	 * @param vertexAId
+	 * @param vertexBId
+	 * @return id of the newly added edge
+	 * @return -1 if either of vertex doesn't exist
+	 * @return -2 if edge already exists
+	 * 
+	 */
 	public int addEdge(int vertexAId, int vertexBId) {
-		Vertex a = adjacency_list.elementAt(vertexAId);
-		Vertex b = adjacency_list.elementAt(vertexBId);
-		Edge ab = new Edge(a, b);
-		if(a.neighbors.containsKey(vertexBId)) {
-			System.out.println("Edge already exists.");
+		if(vertexAId >= vertex_list.size() || vertexBId >= vertex_list.size()) {
 			return -1;
 		}
+		Vertex a = vertex_list.elementAt(vertexAId);
+		Vertex b = vertex_list.elementAt(vertexBId);
+		if(a == null || b == null) {
+			return -1;
+		}
+		if(a.neighbors.containsKey(vertexBId)) {
+			return -2;
+		}
+		Edge ab = new Edge(a, b);
 		int id = edge_list.size();
 		edge_list.add(ab);
 		edge_id_map.put(ab, id);
-		a.addNeighbor(vertex_id_map.get(b), id);
-		b.addNeighbor(vertex_id_map.get(a), id);
+		a.neighbors.put(vertex_id_map.get(b), id);
+		b.neighbors.put(vertex_id_map.get(a), id);
 		return id;
 	}
 	
@@ -92,139 +114,187 @@ public class Skeleton {
 		return new HashSet<Integer>(edge_id_map.values());
 	}
 	
-	public int getEdgeIdByEndpoints(int vertexAId, int vertexBId) {
-		if(vertexAId >= adjacency_list.size() || vertexBId >= adjacency_list.size()) {
-			System.out.println("At least one of the vertices doesn't exist.");
+	/**
+	 * 
+	 * @param vertexAId
+	 * @param vertexBId
+	 * @return id of the edge defined by the two vertices
+	 * @return -1 if either one of the vertices doesn't exist
+	 * @return -2 if no edge exists between the two vertices
+	 * 
+	 */
+	public int getEdgeIdByEndPoints(int vertexAId, int vertexBId) {
+		if(vertexAId >= vertex_list.size() || vertexBId >= vertex_list.size()) {
 			return -1;
 		}
-		Vertex v1 = adjacency_list.get(vertexAId);
-		Vertex v2 = adjacency_list.get(vertexAId);
+		Vertex v1 = vertex_list.get(vertexAId);
+		Vertex v2 = vertex_list.get(vertexAId);
 		if(v1 == null || v2 == null) {
-			System.out.println("At least one of the vertices doesn't exist.");
 			return -1;
 		}
-		return adjacency_list.get(vertexAId).getEdgeId(vertexBId);
+		Integer edgeId = vertex_list.get(vertexAId).neighbors.get(vertexBId);
+		if(edgeId == null) {
+			return -2;
+		}
+		return edgeId.intValue();
 	}
 	
-	public int[] getEndpointsIdByEdge(int edgeId) {
-		Vertex[] endpoints;
-		try {
-			endpoints = edge_list.get(edgeId).endpoints;
-		}
-		catch(Exception e) {
-			System.out.println("Edge doesn't exist.");
+	/**
+	 * 
+	 * @param edgeId
+	 * @return an array of size 2 containing the id of the end points
+	 * @return null if edge doesn't exist
+	 * 
+	 */
+	public int[] getEndPointsIdByEdge(int edgeId) {
+		if(edgeId >= edge_list.size()) {
 			return null;
 		}
-		int[] endpointsId = new int[2];
-		endpointsId[0] = vertex_id_map.get(endpoints[0]);
-		endpointsId[1] = vertex_id_map.get(endpoints[1]);
-		return endpointsId;
+		Edge e = edge_list.get(edgeId);
+		if(e == null) {
+			return null;
+		}
+		return new int[] {vertex_id_map.get(e.endPoints[0]), vertex_id_map.get(e.endPoints[1])};
 	}
 	
+	/**
+	 * 
+	 * @param edgeId
+	 * @return the length of edge
+	 * @return -1 if edge doesn't 
+	 * 
+	 */
 	public double getEdgeLength(int edgeId) {
 		if(edgeId >= edge_list.size()) {
-			System.out.println("Edge doesn't exist.");
 			return -1;
 		}
 		Edge e = edge_list.get(edgeId);
 		if(e == null) {
-			System.out.println("Edge doesn't exist.");
 			return -1;
 		}
 		return e.length;
 	}
 	
+	/**
+	 * 
+	 * @param vertexId
+	 * @return an array of size 2 containing the coordinates of the vertex (x at 0 and y at 1)
+	 * @return null if vertex doesn't exist
+	 * 
+	 */
 	public double[] getVertexCoordinates(int vertexId) {
-		if(vertexId >= adjacency_list.size()) {
-			System.out.println("Vertex doesn't exist.");
+		if(vertexId >= vertex_list.size()) {
 			return null;
 		}
-		Vertex v = adjacency_list.get(vertexId);
+		Vertex v = vertex_list.get(vertexId);
 		if(v == null) {
-			System.out.println("Vertex doesn't exist.");
 			return null;
 		}
 		return new double[] {v.x, v.y};
 	}
 	
+	/**
+	 * 
+	 * @param edgeId
+	 * @return the id of the edge that gets removed
+	 * @return -1 if edge doesn't exist
+	 * 
+	 */
 	public int removeEdge(int edgeId) {
 		if(edgeId >= edge_list.size()) {
-			System.out.println("Edge doesn't exist.");
 			return -1;
 		}
 		Edge e = edge_list.get(edgeId);
 		if(e == null) {
-			System.out.println("Edge doesn't exist.");
 			return -1;
 		}
 		edge_list.set(edgeId, null);
 		edge_id_map.remove(e);
-		Vertex[] endpoints = e.endpoints;
-		endpoints[0].neighbors.remove(vertex_id_map.get(endpoints[1]));
-		endpoints[1].neighbors.remove(vertex_id_map.get(endpoints[0]));
+		e.endPoints[0].neighbors.remove(vertex_id_map.get(e.endPoints[1]));
+		e.endPoints[1].neighbors.remove(vertex_id_map.get(e.endPoints[0]));
 		return edgeId;
 	}
 	
+	/**
+	 * 
+	 * @param vertexId
+	 * @return the id of the vertex that gets removed
+	 * @return -1 if vertex doesn't exist
+	 * @return -2 if vertex isn't isolated (there are still edges connected to it)
+	 * 
+	 */
 	public int removeVertex(int vertexId) {
-		if(vertexId >= adjacency_list.size()) {
-			System.out.println("Vertex doesn't exist.");
+		if(vertexId >= vertex_list.size()) {
 			return -1;
 		}
-		Vertex v = adjacency_list.get(vertexId);
+		Vertex v = vertex_list.get(vertexId);
 		if(v == null) {
-			System.out.println("Vertex doesn't exist.");
 			return -1;
 		}
-		if(!adjacency_list.get(vertexId).neighbors.isEmpty()) {
-			System.out.println("Vertex isn't isolated.");
-			System.out.println("Please first remove all the connected edges.");
-			return -1;
+		if(!vertex_list.get(vertexId).neighbors.isEmpty()) {
+			return -2;
 		}
-		adjacency_list.set(vertexId, null);
+		vertex_list.set(vertexId, null);
 		vertex_id_map.remove(v);
 		return vertexId;
 	}
 	
+	/**
+	 * 
+	 * @param vertexId
+	 * @return a set containing the id of the vertex's neighboring vertices
+	 * @return null if vertex doesn't exist
+	 * 
+	 */
 	public Set<Integer> getVertexNeighbors(int vertexId) {
-		if(vertexId >= adjacency_list.size()) {
-			System.out.println("Vertex doesn't exist.");
+		if(vertexId >= vertex_list.size()) {
 			return null;
 		}
-		Vertex v = adjacency_list.get(vertexId);
+		Vertex v = vertex_list.get(vertexId);
 		if(v == null) {
-			System.out.println("Vertex doesn't exist.");
 			return null;
 		}
-		return adjacency_list.get(vertexId).neighbors.keySet();
+		return vertex_list.get(vertexId).neighbors.keySet();
 	}
 	
+	/**
+	 * 
+	 * @param vertexId
+	 * @return a set containing the id of the vertex's connected edges
+	 * @return null if vertex doesn't exist
+	 */
 	public Set<Integer> getVertexOutEdges(int vertexId) {
-		if(vertexId >= adjacency_list.size()) {
-			System.out.println("Vertex doesn't exist.");
+		if(vertexId >= vertex_list.size()) {
 			return null;
 		}
-		Vertex v = adjacency_list.get(vertexId);
+		Vertex v = vertex_list.get(vertexId);
 		if(v == null) {
-			System.out.println("Vertex doesn't exist.");
 			return null;
 		}
-		return new HashSet<>(adjacency_list.get(vertexId).neighbors.values());
+		return new HashSet<>(vertex_list.get(vertexId).neighbors.values());
 	}
 	
+	/**
+	 * 
+	 * @param vertexId
+	 * @param x
+	 * @param y
+	 * @return the id of the vertex whose coordinates get updated
+	 * @return -1 if vertex doesn't exist
+	 * 
+	 */
 	public int updateVertexCoordinates(int vertexId, double x, double y) {
-		if(vertexId >= adjacency_list.size()) {
-			System.out.println("Vertex doesn't exist.");
+		if(vertexId >= vertex_list.size()) {
 			return -1;
 		}
-		Vertex v = adjacency_list.get(vertexId);
+		Vertex v = vertex_list.get(vertexId);
 		if(v == null) {
-			System.out.println("Vertex doesn't exist.");
 			return -1;
 		}
 		v.x = x;
 		v.y = y;
 		for(Entry<Integer, Integer> entry : v.neighbors.entrySet()) {
-			Vertex neighbor = adjacency_list.get(entry.getKey());
+			Vertex neighbor = vertex_list.get(entry.getKey());
 			Edge outEdge = edge_list.get(entry.getValue());
 			double newLength = Geometry.getEuclideanDistance(x, neighbor.x, y, neighbor.y);
 			outEdge.length = newLength;
@@ -232,12 +302,34 @@ public class Skeleton {
 		return vertexId;
 	}
 	
+	/**
+	 * 
+	 * @param vertexAId
+	 * @param vertexBId
+	 * @return the euclidean distance between the two vertices
+	 * @return -1 if either of the verties doesn't exist
+	 * 
+	 */
+	public double getVerticesRelativeDistance(int vertexAId, int vertexBId) {
+		int edgeId = getEdgeIdByEndPoints(vertexAId, vertexBId);
+		if(edgeId == -1) {
+			return -1;
+		}
+		else if(edgeId == -2) {
+			Vertex a = vertex_list.get(vertexAId);
+			Vertex b = vertex_list.get(vertexBId);
+			return Geometry.getEuclideanDistance(a.x, b.x, a.y, b.y);
+		}
+		return edge_list.get(edgeId).length;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Graph:\n");
 		sb.append("---------------\n");
-		for(int i = 0; i < adjacency_list.size(); ++i) {
-			Vertex v = adjacency_list.get(i);
+		for(int i = 0; i < vertex_list.size(); ++i) {
+			Vertex v = vertex_list.get(i);
 			if(v != null) {
 				sb.append("Vert ");
 				sb.append(i);
@@ -258,11 +350,11 @@ public class Skeleton {
 				sb.append("Edge ");
 				sb.append(edge_id_map.get(e));
 				sb.append(": ");
-				Vertex[] endpoints = e.endpoints;
+				Vertex[] endPoints = e.endPoints;
 				sb.append('(');
-				sb.append(vertex_id_map.get(endpoints[0]));
+				sb.append(vertex_id_map.get(endPoints[0]));
 				sb.append(',');
-				sb.append(vertex_id_map.get(endpoints[1]));
+				sb.append(vertex_id_map.get(endPoints[1]));
 				sb.append(")\n");
 			}
 		}
