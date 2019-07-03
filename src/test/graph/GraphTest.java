@@ -24,6 +24,9 @@ public class GraphTest {
 		System.out.println("actual: " + graph.getEdgeIdByEndpoints(vertex1, vertex2) + ", expected: 2");
 		System.out.println("actual: " + graph.getEdgeLength(edge02) + ", expected: 0.4");
 		System.out.println("actual: " + graph.getEdgeLength(edge12) + ", expected: 0.3");
+		System.out.println("actual: " + graph.updateVertexCoordinates(vertex2, 0.5, 0.2) + ", expected: " + vertex2);
+		System.out.println("actual: " + graph.getEdgeLength(edge02) + ", expected: 0.3");
+		System.out.println("actual: " + graph.getEdgeLength(edge12) + ", expected: 0.4");
 		System.out.println("actual: " + endpointsToString(graph.getEndpointsIdByEdge(4)) + ", expected: null");
 		System.out.println("actual: " + endpointsToString(graph.getEndpointsIdByEdge(edge01)) + ", expected: (" + vertex0 + "," + vertex1 + ")");
 		System.out.println("actual: " + endpointsToString(graph.getEndpointsIdByEdge(edge02)) + ", expected: (" + vertex0 + "," + vertex2 + ")");

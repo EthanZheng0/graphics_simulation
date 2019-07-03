@@ -84,7 +84,25 @@ public class Skeleton {
 		return id;
 	}
 	
+	public Set<Integer> getAllVertices() {
+		return new HashSet<Integer>(vertex_id_map.values());
+	}
+	
+	public Set<Integer> getAllEdges() {
+		return new HashSet<Integer>(edge_id_map.values());
+	}
+	
 	public int getEdgeIdByEndpoints(int vertexAId, int vertexBId) {
+		if(vertexAId >= adjacency_list.size() || vertexBId >= adjacency_list.size()) {
+			System.out.println("At least one of the vertices doesn't exist.");
+			return -1;
+		}
+		Vertex v1 = adjacency_list.get(vertexAId);
+		Vertex v2 = adjacency_list.get(vertexAId);
+		if(v1 == null || v2 == null) {
+			System.out.println("At least one of the vertices doesn't exist.");
+			return -1;
+		}
 		return adjacency_list.get(vertexAId).getEdgeId(vertexBId);
 	}
 	
@@ -104,15 +122,29 @@ public class Skeleton {
 	}
 	
 	public double getEdgeLength(int edgeId) {
-		double length;
-		try {
-			length = edge_list.get(edgeId).length;
-		}
-		catch(Exception e) {
+		if(edgeId >= edge_list.size()) {
 			System.out.println("Edge doesn't exist.");
 			return -1;
 		}
-		return length;
+		Edge e = edge_list.get(edgeId);
+		if(e == null) {
+			System.out.println("Edge doesn't exist.");
+			return -1;
+		}
+		return e.length;
+	}
+	
+	public double[] getVertexCoordinates(int vertexId) {
+		if(vertexId >= adjacency_list.size()) {
+			System.out.println("Vertex doesn't exist.");
+			return null;
+		}
+		Vertex v = adjacency_list.get(vertexId);
+		if(v == null) {
+			System.out.println("Vertex doesn't exist.");
+			return null;
+		}
+		return new double[] {v.x, v.y};
 	}
 	
 	public int removeEdge(int edgeId) {
@@ -153,16 +185,30 @@ public class Skeleton {
 		return vertexId;
 	}
 	
-	public Set<Integer> getAllVertices() {
-		return new HashSet<Integer>(vertex_id_map.values());
-	}
-	
-	public Set<Integer> getAllEdges() {
-		return new HashSet<Integer>(edge_id_map.values());
-	}
-	
-	public Set<Integer> getNeighbors(int vertexId) {
+	public Set<Integer> getVertexNeighbors(int vertexId) {
+		if(vertexId >= adjacency_list.size()) {
+			System.out.println("Vertex doesn't exist.");
+			return null;
+		}
+		Vertex v = adjacency_list.get(vertexId);
+		if(v == null) {
+			System.out.println("Vertex doesn't exist.");
+			return null;
+		}
 		return adjacency_list.get(vertexId).neighbors.keySet();
+	}
+	
+	public Set<Integer> getVertexOutEdges(int vertexId) {
+		if(vertexId >= adjacency_list.size()) {
+			System.out.println("Vertex doesn't exist.");
+			return null;
+		}
+		Vertex v = adjacency_list.get(vertexId);
+		if(v == null) {
+			System.out.println("Vertex doesn't exist.");
+			return null;
+		}
+		return new HashSet<>(adjacency_list.get(vertexId).neighbors.values());
 	}
 	
 	public int updateVertexCoordinates(int vertexId, double x, double y) {
