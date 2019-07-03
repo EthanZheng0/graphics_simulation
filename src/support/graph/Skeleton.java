@@ -368,22 +368,26 @@ public class Skeleton {
 		return edge_list.get(edgeId).length;
 	}
 	
-	public void drawSkeleton(Color edgeColor, Color vertexColor, double edgeThickness, double vertexRadius) {
+	public void drawSkeleton(Color edgeColor, Color vertexColor, double edgeThickness, double vertexRadius, boolean drawEdges, boolean drawVertices) {
 		StdDraw.setCanvasSize(800, 800);
-		StdDraw.setPenColor(edgeColor);
-		StdDraw.setPenRadius(edgeThickness);
-		for(Edge e : edge_list) {
-			if(e != null) {
-				StdDraw.line(e.endPoints[0].x, e.endPoints[0].y, e.endPoints[1].x, e.endPoints[1].y);
+		if(drawEdges) {
+			StdDraw.setPenColor(edgeColor);
+			StdDraw.setPenRadius(edgeThickness);
+			for(Edge e : edge_list) {
+				if(e != null) {
+					StdDraw.line(e.endPoints[0].x, e.endPoints[0].y, e.endPoints[1].x, e.endPoints[1].y);
+				}
 			}
 		}
-//		StdDraw.setPenColor(vertexColor);
-//		StdDraw.setPenRadius(vertexRadius);
-//		for(Vertex v : vertex_list) {
-//			if(v != null) {
-//				StdDraw.point(v.x, v.y);
-//			}
-//		}
+		if(drawVertices) {
+			StdDraw.setPenColor(vertexColor);
+			StdDraw.setPenRadius(vertexRadius);
+			for(Vertex v : vertex_list) {
+				if(v != null) {
+					StdDraw.point(v.x, v.y);
+				}
+			}
+		}
 	}
 
 	@Override
