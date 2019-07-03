@@ -3,15 +3,18 @@ package support.graph;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
+
+import support.algorithm.Geometry;
 
 public class Skeleton {
 	
 	static class Vertex {
-		private final double x;
-		private final double y;
-		private final Map<Integer, Integer> neighbors;
+		private double x;
+		private double y;
+		private Map<Integer, Integer> neighbors;
 		
 		private Vertex(double x, double y) {
 			this.x = x;
@@ -41,7 +44,7 @@ public class Skeleton {
 			this.endpoints = new Vertex[2];
 			this.endpoints[0] = v1;
 			this.endpoints[1] = v2;
-			this.length = Math.sqrt(Math.pow((v1.x - v2.x), 2) + Math.pow((v1.y - v2.y), 2));
+			this.length = Geometry.getEuclideanDistance(v1.x, v2.x, v1.y, v2.y);
 		}
 	}
 	
@@ -160,6 +163,27 @@ public class Skeleton {
 	
 	public Set<Integer> getNeighbors(int vertexId) {
 		return adjacency_list.get(vertexId).neighbors.keySet();
+	}
+	
+	public int updateVertexCoordinates(int vertexId, double x, double y) {
+		if(vertexId >= adjacency_list.size()) {
+			System.out.println("Vertex doesn't exist.");
+			return -1;
+		}
+		Vertex v = adjacency_list.get(vertexId);
+		if(v == null) {
+			System.out.println("Vertex doesn't exist.");
+			return -1;
+		}
+		v.x = x;
+		v.y = y;
+		for(Entry<Integer, Integer> entry : v.neighbors.entrySet()) {
+			Vertex neighbor = adjacency_list.get(entry.getKey());
+			Edge outEdge = edge_list.get(entry.getValue());
+			double newLength = Geometry.getEuclideanDistance(x, neighbor.x, y, neighbor.y);
+			outEdge.length = newLength;
+		}
+		return vertexId;
 	}
 	
 	public String toString() {
