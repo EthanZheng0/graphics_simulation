@@ -40,7 +40,7 @@ public class GraphTest {
 		System.out.println("actual: " + graph.removeEdge(edge01) + ", expected: " + edge01);
 		System.out.println("actual: " + graph.removeEdge(edge01) + ", expected: -1");
 		System.out.println(graph);
-		graph.drawSkeleton(Color.BLUE, Color.BLACK, 0.005, 0.015);
+		graph.drawSkeleton(Color.BLUE, Color.BLACK, 0.005, 0.015, true, true);
 		edge01 = graph.addEdge(vertex0, vertex1);
 		System.out.println("actual: " + edge01 + ", expected: 3");
 		System.out.println(graph);
