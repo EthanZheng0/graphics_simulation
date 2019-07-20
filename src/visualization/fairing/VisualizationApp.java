@@ -1,8 +1,8 @@
 package visualization.fairing;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.Vector;
-import com.sun.glass.events.KeyEvent;
 import edu.princeton.cs.introcs.*;
 import support.algorithm.Fairing;
 import support.graph.Edge;
