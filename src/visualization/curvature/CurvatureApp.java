@@ -12,7 +12,7 @@ import support.graph.SuperEdge;
 import support.graph.SuperVertex;
 import support.graph.Vertex;
 
-public class VisualizationApp {
+public class CurvatureApp {
 
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {

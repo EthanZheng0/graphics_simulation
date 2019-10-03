@@ -11,7 +11,7 @@ import support.graph.SuperSkeleton;
 import support.graph.SuperVertex;
 import support.graph.Vertex;
 
-public class VisualizationApp {
+public class FairingApp {
 
 	@SuppressWarnings({ "deprecation" })
 	public static void main(String[] args) {
